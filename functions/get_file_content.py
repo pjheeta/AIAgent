@@ -24,11 +24,9 @@ def get_file_content(working_directory, file_path):
 
     if not valid_target_file:
         print (f'Error: Cannot read "{fullPath}" as it is outside the permitted working directory')
-        return (f'Error: Cannot read "{fullPath}" as it is outside the permitted working directory')
 
     if not os.path.isfile(fullPath):
         print (f'Error: File not found or is not a regular file: "{fullPath}"')
-        return (f'Error: File not found or is not a regular file: "{fullPath}"')
 
     print (f'Listing file path: "{fullPath}"\n')
     
