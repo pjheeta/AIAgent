@@ -1,5 +1,6 @@
 import os
-MAX_CHARS = 10000
+from config import *
+
 
 def get_file_content(working_directory, file_path):
     workingDIR = os.path.abspath(working_directory)   

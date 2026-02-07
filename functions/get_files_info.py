@@ -1,15 +1,33 @@
 import os
+from google.genai import types
+
+schema_get_files_info = types.FunctionDeclaration(
+    name="get_files_info",
+    description="Lists files in a specified directory relative to the working directory, providing file size and directory status",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
+            ),
+        },
+    ),
+)
+available_functions = types.Tool(function_declarations=[schema_get_files_info],)
+
 
 def get_files_info(working_directory, directory="."):
+    #workingDIR is the directory you are working out of
+    #newJoin is the addition of file_path to the Working Directory
+    #fullPath is the Absolute Path of the Working Directory + file_path
+    #targetPAth is fullPath converted into it's true form
 
     workingDIR = os.path.abspath(working_directory)
-    #The Directory you are working out of
     newJoin = os.path.join(working_directory, directory)
-    #adding the *new* directory to Working Directory
     fullPath = os.path.abspath(newJoin)
-    #getting the Absolute Path of the Working Directory + New Directory
     target_dir = os.path.normpath(os.path.join(workingDIR, directory))
-    #Converting everything into it's true form
+    valid_target_dir = os.path.commonpath([workingDIR, target_dir]) == workingDIR
 
     # print (f"Working Directory: {working_directory}")
     # print (f"New Directory to add: {directory}")
@@ -21,15 +39,9 @@ def get_files_info(working_directory, directory="."):
     # print (f"Target Directory: {target_dir}")
     # #Absolute Path of Working Directory + New Directory in it;s true form
 
-    valid_target_dir = os.path.commonpath([workingDIR, target_dir]) == workingDIR
-    #Checking to see if target_dir is inside workingDIR
-    #print (f"Valid Target Directory: {valid_target_dir}")   
+ 
 
-    # if valid_target_dir==False:
-    #     return (f'Error: Cannot list "{directory}" as it is outside the permitted working directory')  
 
-    # if not os.path.isdir(target_dir):
-    #     return (f'Error: "{directory}" is not a directory')
     contents = os.listdir(target_dir)
     if not valid_target_dir:
         print (f'Error: Cannot list "{directory}" as it is outside the permitted working directory')
