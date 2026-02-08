@@ -9,12 +9,15 @@ schema_get_files_info = types.FunctionDeclaration(
         properties={
             "directory": types.Schema(
                 type=types.Type.STRING,
+                description="The directory that we are searching",
+            ),
+            "working_directory": types.Schema(
+                type=types.Type.STRING,
                 description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
             ),
         },
     ),
 )
-available_functions = types.Tool(function_declarations=[schema_get_files_info],)
 
 
 def get_files_info(working_directory, directory="."):
@@ -29,18 +32,6 @@ def get_files_info(working_directory, directory="."):
     target_dir = os.path.normpath(os.path.join(workingDIR, directory))
     valid_target_dir = os.path.commonpath([workingDIR, target_dir]) == workingDIR
 
-    # print (f"Working Directory: {working_directory}")
-    # print (f"New Directory to add: {directory}")
-    # print (f"Absolute Working Directory: {workingDIR}")
-    # #Asolute Path of Working Directory
-    # print (f"Joined: {fart}")
-    # print (f"full Path: {fullPath}")
-    # #Absolute Path of Working Directory + New Directory
-    # print (f"Target Directory: {target_dir}")
-    # #Absolute Path of Working Directory + New Directory in it;s true form
-
- 
-
 
     contents = os.listdir(target_dir)
     if not valid_target_dir:
@@ -49,14 +40,6 @@ def get_files_info(working_directory, directory="."):
 
     if not os.path.isdir(target_dir):
         print (f'Error: "{directory}" is not a directory')
-
-        
-
-    # except Exception as e:
-    #     error_msg = f"Error: {str(e)}"
-    #     print(error_msg)
-    #     return error_msg
-
 
     
     fileData = []
@@ -70,8 +53,3 @@ def get_files_info(working_directory, directory="."):
 
     endResult = "\n".join(fileData)
     return endResult
-
-
-
-
-

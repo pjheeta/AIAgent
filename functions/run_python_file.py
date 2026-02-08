@@ -1,5 +1,25 @@
 import os
 import subprocess
+from google.genai import types
+
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Execute Python files with optional arguments  in a specified directory relative to the working directory",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "working_directory": types.Schema(
+                type=types.Type.STRING,
+                description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
+            ),
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The file path of the file to read.",
+            ),
+        },
+    ),
+)
+
 def run_python_file(working_directory, file_path, args=None):
     #workingDIR is the directory you are working out of
     #newJoin is the addition of file_path to the Working Directory

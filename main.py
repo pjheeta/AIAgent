@@ -7,10 +7,16 @@ from google.genai.types import FunctionCall
 from prompts import system_prompt
 from call_function import available_functions
 from functions.get_files_info import *
+from functions.get_file_content import *
+from functions.write_file import *
+from functions.run_python_file import *
 
 load_dotenv("api.env")
 api_key = os.environ.get("GEMINI_API_KEY")
-
+print(f"DEBUG: Number of functions available: {len(available_functions.function_declarations)}")
+for func in available_functions.function_declarations:
+    print(f"  - {func.name}")
+    
 def main():
     print("Hello from aiagent!")
     client = genai.Client(api_key=api_key)
@@ -39,7 +45,6 @@ def main():
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
 
     print(response.text)
-    # print (f"Calling function: {function_call.name}({function_call.args})")
 
     if response.function_calls:
         for function_call in response.function_calls:
