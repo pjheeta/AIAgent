@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from google.genai import types
 from google.genai.types import FunctionCall
 from prompts import system_prompt
-from call_function import available_functions
+from call_function import *
 from functions.get_files_info import *
 from functions.get_file_content import *
 from functions.write_file import *
@@ -16,7 +16,8 @@ api_key = os.environ.get("GEMINI_API_KEY")
 print(f"DEBUG: Number of functions available: {len(available_functions.function_declarations)}")
 for func in available_functions.function_declarations:
     print(f"  - {func.name}")
-    
+
+
 def main():
     print("Hello from aiagent!")
     client = genai.Client(api_key=api_key)
@@ -47,11 +48,31 @@ def main():
     print(response.text)
 
     if response.function_calls:
+        function_results = []  # Track results
+        
         for function_call in response.function_calls:
-            print(f"Calling function: {function_call.name}({function_call.args})")
+            # Call the function
+            function_call_result = call_function(function_call, verbose=args.verbose)
+            
+            # Verify we got a valid response
+            if not function_call_result.parts:
+                raise Exception("Function call returned no parts")
+            
+            if function_call_result.parts[0].function_response is None:
+                raise Exception("Function response is None")
+            
+            if function_call_result.parts[0].function_response.response is None:
+                raise Exception("Function response.response is None")
+            
+            # Add to results
+            function_results.append(function_call_result.parts[0])
+            
+            # Print result if verbose
+            if args.verbose:
+                print(f"-> {function_call_result.parts[0].function_response.response}")
     else:
-        print(f"No function calls, Here is the response in text {response.text}")    
-    
+        print(f"No function calls, Here is the response in text {response.text}")
+
 
 
 if __name__ == "__main__":
